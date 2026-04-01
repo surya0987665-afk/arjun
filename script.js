@@ -1,68 +1,64 @@
-let students = JSON.parse(localStorage.getItem("students")) || [];
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fee Manager</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-function showAddForm() {
-    document.getElementById("studentForm").style.display = "block";
-}
+<h1>Nandi Pipes Badminton Academy - Fee Manager</h1>
 
-function addStudent() {
-    let student = {
-        name: document.getElementById("name").value,
-        phone: document.getElementById("phone").value,
-        fee: document.getElementById("fee").value,
-        dueDate: document.getElementById("dueDate").value,
-        joinDate: document.getElementById("joinDate").value,
-        payments: []
-    };
+<div class="dashboard">
+    <div class="card">Total Students: <span id="totalStudents">0</span></div>
+    <div class="card">Paid Students: <span id="paidStudents">0</span></div>
+    <div class="card">Unpaid Students: <span id="unpaidStudents">0</span></div>
+    <div class="card">Monthly Income: ₹ <span id="monthlyIncome">0</span></div>
+</div>
 
-    students.push(student);
-    localStorage.setItem("students", JSON.stringify(students));
-    loadStudents();
-}
+<hr>
 
-function loadStudents() {
-    let table = document.getElementById("studentTable");
-    table.innerHTML = "";
+<h2>Add Student</h2>
+<input type="text" id="name" placeholder="Student Name">
+<input type="text" id="phone" placeholder="Phone Number">
+<input type="number" id="fee" placeholder="Monthly Fee">
+<input type="date" id="dueDate">
+<button onclick="addStudent()">Add Student</button>
 
-    let paid = 0;
+<hr>
 
-    students.forEach((s, index) => {
-        let status = s.payments.length > 0 ? "Paid" : "Unpaid";
-        if(status == "Paid") paid++;
+<h2>Record Payment</h2>
+<select id="studentSelect"></select>
+<input type="number" id="amount" placeholder="Amount">
+<select id="mode">
+    <option>Cash</option>
+    <option>Online</option>
+    <option>UPI</option>
+</select>
+<input type="date" id="paymentDate">
+<button onclick="recordPayment()">Record Payment</button>
 
-        table.innerHTML += `
+<hr>
+
+<h2>Search Student</h2>
+<input type="text" id="search" onkeyup="searchStudent()" placeholder="Search name">
+
+<hr>
+
+<h2>Students List</h2>
+<table>
+    <thead>
         <tr>
-            <td onclick="viewStudent(${index})">${s.name}</td>
-            <td>${s.phone}</td>
-            <td>${s.fee}</td>
-            <td>${s.dueDate}</td>
-            <td>${status}</td>
-            <td>
-                <button onclick="deleteStudent(${index})">Delete</button>
-            </td>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Fee</th>
+            <th>Due Date</th>
+            <th>Status</th>
+            <th>Action</th>
         </tr>
-        `;
-    });
+    </thead>
+    <tbody id="studentTable"></tbody>
+</table>
 
-    document.getElementById("totalStudents").innerText = students.length;
-    document.getElementById("paidStudents").innerText = paid;
-    document.getElementById("unpaidStudents").innerText = students.length - paid;
-}
-
-function deleteStudent(index) {
-    students.splice(index, 1);
-    localStorage.setItem("students", JSON.stringify(students));
-    loadStudents();
-}
-
-function viewStudent(index) {
-    let s = students[index];
-    alert(
-        "Name: " + s.name +
-        "\nPhone: " + s.phone +
-        "\nFee: " + s.fee +
-        "\nJoin Date: " + s.joinDate +
-        "\nPayments Done: " + s.payments.length
-    );
-}
-
-loadStudents();
+<script src="script.js"></script>
+</body>
+</html>
