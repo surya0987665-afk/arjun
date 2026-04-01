@@ -1,32 +1,50 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Student Fee Dashboard</title>
+    <title>Fee Manager</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<h1>Student Fee Dashboard</h1>
+<h1>Nandi Pipes Badminton Academy - Fee Manager</h1>
 
 <div class="dashboard">
     <div class="card">Total Students: <span id="totalStudents">0</span></div>
     <div class="card">Paid Students: <span id="paidStudents">0</span></div>
     <div class="card">Unpaid Students: <span id="unpaidStudents">0</span></div>
+    <div class="card">Monthly Income: ₹ <span id="monthlyIncome">0</span></div>
 </div>
 
-<input type="text" id="search" placeholder="Search Student">
-<button onclick="showAddForm()">Add Student</button>
+<hr>
 
-<div id="studentForm" class="form">
-    <h3>Add Student</h3>
-    <input type="text" id="name" placeholder="Name">
-    <input type="text" id="phone" placeholder="Phone">
-    <input type="number" id="fee" placeholder="Fee Amount">
-    <input type="date" id="dueDate">
-    <input type="date" id="joinDate">
-    <button onclick="addStudent()">Save</button>
-</div>
+<h2>Add Student</h2>
+<input type="text" id="name" placeholder="Student Name">
+<input type="text" id="phone" placeholder="Phone Number">
+<input type="number" id="fee" placeholder="Monthly Fee">
+<input type="date" id="dueDate">
+<button onclick="addStudent()">Add Student</button>
 
+<hr>
+
+<h2>Record Payment</h2>
+<select id="studentSelect"></select>
+<input type="number" id="amount" placeholder="Amount">
+<select id="mode">
+    <option>Cash</option>
+    <option>Online</option>
+    <option>UPI</option>
+</select>
+<input type="date" id="paymentDate">
+<button onclick="recordPayment()">Record Payment</button>
+
+<hr>
+
+<h2>Search Student</h2>
+<input type="text" id="search" onkeyup="searchStudent()" placeholder="Search name">
+
+<hr>
+
+<h2>Students List</h2>
 <table>
     <thead>
         <tr>
