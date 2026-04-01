@@ -1,74 +1,18 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Student Fee Manager</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
+<div id="students" class="page">
+    <h1>Students</h1>
 
-<div class="sidebar">
-    <h2>Fee Manager</h2>
-    <a href="#" onclick="showPage('dashboard')">Dashboard</a>
-    <a href="#" onclick="showPage('students')">Students</a>
-    <a href="#" onclick="showPage('notifications')">Notifications</a>
+    <input type="hidden" id="editIndex">
+
+    <input type="text" id="name" placeholder="Name">
+    <input type="text" id="phone" placeholder="Phone">
+    <input type="number" id="fee" placeholder="Fee Amount">
+    <input type="number" id="dueDay" placeholder="Due Day (1-31)">
+
+    <button onclick="saveStudent()">Save Student</button>
+
+    <h3>Student List</h3>
+    <ul id="studentList"></ul>
+
+    <h3>Student Monthly Record</h3>
+    <div id="studentRecord"></div>
 </div>
-
-<div class="content">
-
-    <!-- Dashboard -->
-    <div id="dashboard" class="page">
-        <h1>Dashboard</h1>
-        <div class="card">Total Students: <span id="totalStudents"></span></div>
-        <div class="card">Monthly Income: ₹ <span id="income"></span></div>
-    </div>
-
-    <!-- Students -->
-    <div id="students" class="page">
-        <h1>Students</h1>
-
-        <input type="text" id="name" placeholder="Name">
-        <input type="text" id="phone" placeholder="Phone">
-        <input type="number" id="fee" placeholder="Fee">
-        <input type="number" id="dueDay" placeholder="Due Day">
-
-        <br><br>
-
-        <select id="month">
-            <option value="1">Jan</option>
-            <option value="2">Feb</option>
-            <option value="3">Mar</option>
-            <option value="4">Apr</option>
-            <option value="5">May</option>
-            <option value="6">Jun</option>
-            <option value="7">Jul</option>
-            <option value="8">Aug</option>
-            <option value="9">Sep</option>
-            <option value="10">Oct</option>
-            <option value="11">Nov</option>
-            <option value="12">Dec</option>
-        </select>
-
-        <input type="number" id="year" placeholder="Year">
-
-        <select id="status">
-            <option value="PAID">Paid</option>
-            <option value="UNPAID">Unpaid</option>
-        </select>
-
-        <button onclick="saveStudent()">Save</button>
-
-        <h3>Student List</h3>
-        <ul id="studentList"></ul>
-    </div>
-
-    <!-- Notifications -->
-    <div id="notifications" class="page">
-        <h1>Notifications</h1>
-        <button onclick="sendAllReminders()">Send All Unpaid Reminders</button>
-    </div>
-
-</div>
-
-<script src="script.js"></script>
-</body>
-</html>
