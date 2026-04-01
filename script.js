@@ -5,6 +5,13 @@ function showPage(page){
         p.style.display="none";
     });
     document.getElementById(page).style.display="block";
+
+    if(page === "students"){
+        loadStudents();
+    }
+    if(page === "dashboard"){
+        loadDashboard();
+    }
 }
 
 showPage("dashboard");
@@ -19,6 +26,7 @@ function saveStudent(){
     localStorage.setItem("students", JSON.stringify(students));
 
     loadStudents();
+    loadDashboard();
 }
 
 function loadStudents(){
@@ -28,29 +36,29 @@ function loadStudents(){
     list.innerHTML="";
     students.forEach((s,i)=>{
         let li=document.createElement("li");
-        li.innerText=s.name+" ₹"+s.fee;
+        li.innerHTML =
+        s.name + " ₹" + s.fee +
+        " <button onclick='deleteStudent("+i+")'>Delete</button>";
         list.appendChild(li);
     });
 }
 
-function markPaid(){
-    let index=document.getElementById("studentSelect").value;
-    let date=document.getElementById("paidDate").value;
-
-    let d=new Date(date);
-    students[index].payments.push({
-        month:d.getMonth()+1,
-        year:d.getFullYear(),
-        paidDate:date
-    });
-
+function deleteStudent(i){
+    students.splice(i,1);
     localStorage.setItem("students", JSON.stringify(students));
+    loadStudents();
+    loadDashboard();
 }
 
-function sendDueReminders(){
+function loadDashboard(){
+    document.getElementById("totalStudents").innerText = students.length;
+
+    let totalIncome = 0;
     students.forEach(s=>{
-        let msg="Reminder: Fee ₹"+s.fee+" due soon";
-        let url="https://wa.me/91"+s.phone+"?text="+encodeURIComponent(msg);
-        window.open(url);
+        s.payments.forEach(p=>{
+            totalIncome += Number(s.fee);
+        });
     });
+
+    document.getElementById("income").innerText = totalIncome;
 }
