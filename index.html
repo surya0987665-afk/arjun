@@ -1,18 +1,46 @@
-<div id="students" class="page">
-    <h1>Students</h1>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Fee Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-    <input type="hidden" id="editIndex">
+<h1>Student Fee Dashboard</h1>
 
+<div class="dashboard">
+    <div class="card">Total Students: <span id="totalStudents">0</span></div>
+    <div class="card">Paid Students: <span id="paidStudents">0</span></div>
+    <div class="card">Unpaid Students: <span id="unpaidStudents">0</span></div>
+</div>
+
+<input type="text" id="search" placeholder="Search Student">
+<button onclick="showAddForm()">Add Student</button>
+
+<div id="studentForm" class="form">
+    <h3>Add Student</h3>
     <input type="text" id="name" placeholder="Name">
     <input type="text" id="phone" placeholder="Phone">
     <input type="number" id="fee" placeholder="Fee Amount">
-    <input type="number" id="dueDay" placeholder="Due Day (1-31)">
-
-    <button onclick="saveStudent()">Save Student</button>
-
-    <h3>Student List</h3>
-    <ul id="studentList"></ul>
-
-    <h3>Student Monthly Record</h3>
-    <div id="studentRecord"></div>
+    <input type="date" id="dueDate">
+    <input type="date" id="joinDate">
+    <button onclick="addStudent()">Save</button>
 </div>
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Fee</th>
+            <th>Due Date</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody id="studentTable"></tbody>
+</table>
+
+<script src="script.js"></script>
+</body>
+</html>
