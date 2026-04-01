@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Fee Manager</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="sidebar">
+    <h2>Fee Manager</h2>
+    <a href="#" onclick="showPage('dashboard')">Dashboard</a>
+    <a href="#" onclick="showPage('students')">Students</a>
+    <a href="#" onclick="showPage('fees')">Fee Records</a>
+    <a href="#" onclick="showPage('income')">Monthly Income</a>
+    <a href="#" onclick="showPage('notifications')">Notifications</a>
+</div>
+
+<div class="content">
+
+    <div id="dashboard" class="page">
+        <h1>Dashboard</h1>
+        <div class="card">Total Students: <span id="totalStudents"></span></div>
+        <div class="card">Collected This Month: ₹ <span id="collected"></span></div>
+        <div class="card">Unpaid Students: <span id="unpaid"></span></div>
+        <div class="card">Monthly Income: ₹ <span id="income"></span></div>
+    </div>
+
+    <div id="students" class="page">
+        <h1>Students</h1>
+        <input type="text" id="name" placeholder="Name">
+        <input type="text" id="phone" placeholder="Phone">
+        <input type="number" id="fee" placeholder="Fee">
+        <input type="number" id="dueDay" placeholder="Due Day">
+        <button onclick="saveStudent()">Save</button>
+        <ul id="studentList"></ul>
+    </div>
+
+    <div id="fees" class="page">
+        <h1>Fee Records</h1>
+        <select id="studentSelect"></select>
+        <input type="date" id="paidDate">
+        <button onclick="markPaid()">Mark Paid</button>
+    </div>
+
+    <div id="income" class="page">
+        <h1>Monthly Income</h1>
+        <p>Total: ₹ <span id="monthlyTotal"></span></p>
+    </div>
+
+    <div id="notifications" class="page">
+        <h1>Notifications</h1>
+        <button onclick="sendDueReminders()">2 Days Before Reminder</button>
+        <button onclick="sendOverdue()">Overdue Reminder</button>
+    </div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
