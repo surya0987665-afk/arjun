@@ -17,28 +17,23 @@ function saveStudent(){
     let phone = document.getElementById("phone").value;
     let fee = document.getElementById("fee").value;
     let dueDay = document.getElementById("dueDay").value;
-    let month = document.getElementById("month").value;
-    let year = document.getElementById("year").value;
-    let status = document.getElementById("status").value;
+    let editIndex = document.getElementById("editIndex").value;
 
-    let student = students.find(s => s.name === name);
-
-    if(!student){
-        student = {
-            name: name,
-            phone: phone,
-            fee: fee,
-            dueDay: dueDay,
-            yearData: {}
-        };
-        students.push(student);
+    if(editIndex === ""){
+        students.push({
+            name:name,
+            phone:phone,
+            fee:fee,
+            dueDay:dueDay,
+            yearData:{}
+        });
+    } else {
+        students[editIndex].name = name;
+        students[editIndex].phone = phone;
+        students[editIndex].fee = fee;
+        students[editIndex].dueDay = dueDay;
+        document.getElementById("editIndex").value="";
     }
-
-    if(!student.yearData[year]){
-        student.yearData[year] = {};
-    }
-
-    student.yearData[year][month] = status;
 
     localStorage.setItem("students", JSON.stringify(students));
 
@@ -48,38 +43,85 @@ function saveStudent(){
 
 function loadStudents(){
     let list = document.getElementById("studentList");
-    if(!list) return;
-
     list.innerHTML = "";
 
     students.forEach((s,i)=>{
         let li = document.createElement("li");
 
-        let data = "";
-        let reminderBtn = "";
+        li.innerHTML =
+        "<b onclick='showStudentRecord("+i+")'>" + s.name + "</b> | ₹" + s.fee +
+        " <button onclick='editStudent("+i+")'>Edit</button>" +
+        " <button onclick='deleteStudent("+i+")'>Delete</button>";
 
-        for(let y in s.yearData){
-            for(let m in s.yearData[y]){
-                let status = s.yearData[y][m];
-                data += y + "-" + m + ":" + status + " ";
-
-                if(status == "UNPAID"){
-                    let msg = "Hello " + s.name +
-                    ", your fee of ₹" + s.fee +
-                    " for month " + m +
-                    " is pending.";
-
-                    let url = "https://wa.me/91" + s.phone +
-                    "?text=" + encodeURIComponent(msg);
-
-                    reminderBtn += " <a href='"+url+"' target='_blank'>Reminder</a>";
-                }
-            }
-        }
-
-        li.innerHTML = s.name + " | ₹" + s.fee + " | " + data + reminderBtn;
         list.appendChild(li);
     });
+}
+
+function editStudent(i){
+    let s = students[i];
+    document.getElementById("name").value = s.name;
+    document.getElementById("phone").value = s.phone;
+    document.getElementById("fee").value = s.fee;
+    document.getElementById("dueDay").value = s.dueDay;
+    document.getElementById("editIndex").value = i;
+}
+
+function deleteStudent(i){
+    students.splice(i,1);
+    localStorage.setItem("students", JSON.stringify(students));
+    loadStudents();
+    loadDashboard();
+}
+
+function showStudentRecord(index){
+    let student = students[index];
+    let year = new Date().getFullYear();
+    let recordDiv = document.getElementById("studentRecord");
+
+    let html = "<table border='1'><tr>";
+    let months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
+    months.forEach((m,mi)=>{
+        html += "<th>"+m+"</th>";
+    });
+    html += "</tr><tr>";
+
+    months.forEach((m,mi)=>{
+        let month = mi+1;
+        let status = "UNPAID";
+
+        if(student.yearData[year] && student.yearData[year][month]){
+            status = student.yearData[year][month];
+        }
+
+        let color = status == "PAID" ? "lightgreen" : "salmon";
+
+        html += "<td style='background:"+color+"' onclick='toggleStatus("+index+","+month+")'>"+status+"</td>";
+    });
+
+    html += "</tr></table>";
+
+    recordDiv.innerHTML = html;
+}
+
+function toggleStatus(studentIndex, month){
+    let year = new Date().getFullYear();
+
+    if(!students[studentIndex].yearData[year]){
+        students[studentIndex].yearData[year] = {};
+    }
+
+    let current = students[studentIndex].yearData[year][month];
+
+    if(current == "PAID"){
+        students[studentIndex].yearData[year][month] = "UNPAID";
+    } else {
+        students[studentIndex].yearData[year][month] = "PAID";
+    }
+
+    localStorage.setItem("students", JSON.stringify(students));
+    showStudentRecord(studentIndex);
+    loadDashboard();
 }
 
 function loadDashboard(){
@@ -98,23 +140,4 @@ function loadDashboard(){
     });
 
     document.getElementById("income").innerText = income;
-}
-
-function sendAllReminders(){
-    students.forEach(s=>{
-        for(let y in s.yearData){
-            for(let m in s.yearData[y]){
-                if(s.yearData[y][m] == "UNPAID"){
-                    let msg = "Hello " + s.name +
-                    ", your fee of ₹" + s.fee +
-                    " is pending.";
-
-                    let url = "https://wa.me/91" + s.phone +
-                    "?text=" + encodeURIComponent(msg);
-
-                    window.open(url);
-                }
-            }
         }
-    });
-}
