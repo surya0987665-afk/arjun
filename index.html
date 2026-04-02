@@ -19,9 +19,6 @@ if(localStorage.getItem("loggedIn") !== "true") {
     <h3>Total Students: <span id="totalStudents">0</span></h3>
     <h3>Paid Students: <span id="paidStudents">0</span></h3>
     <h3>Pending Students: <span id="pendingStudents">0</span></h3>
-    <h3>Total Amount: ₹<span id="totalAmount">0</span></h3>
-    <h3>Paid Amount: ₹<span id="paidAmount">0</span></h3>
-    <h3>Pending Amount: ₹<span id="pendingAmount">0</span></h3>
 </div>
 
 <input type="text" id="search" placeholder="Search Student" onkeyup="searchStudent()">
@@ -48,7 +45,7 @@ if(localStorage.getItem("loggedIn") !== "true") {
     <tbody id="studentTable"></tbody>
 </table>
 
-<!-- 12 Month History -->
+<!-- Month History -->
 <div id="historyModal" style="display:none; background:white; padding:20px; border:1px solid black;">
     <h3 id="historyTitle"></h3>
     <table>
