@@ -1,4 +1,10 @@
+
 let students = [];
+
+function logout() {
+    localStorage.removeItem("loggedIn");
+    window.location.href = "login.html";
+}
 
 function addStudent() {
     let name = document.getElementById("name").value;
@@ -52,6 +58,8 @@ function deleteStudent(index) {
 }
 
 function sendReminder(phone, name, amount, dueDate) {
+    phone = phone.replace(/\D/g, "");
+
     let message = `Hello ${name},
 
 This is a gentle reminder from *Nandi Pipes Badminton Academy*.
@@ -63,10 +71,12 @@ Thank you.
 Coach: Nagarjuna`;
 
     let url = "https://wa.me/91" + phone + "?text=" + encodeURIComponent(message);
-    window.open(url);
+    window.open(url, '_blank');
 }
 
 function sendReceipt(phone, name, amount) {
+    phone = phone.replace(/\D/g, "");
+
     let today = new Date().toISOString().split('T')[0];
 
     let message = `*Nandi Pipes Badminton Academy*
@@ -85,5 +95,5 @@ Coach: Nagarjuna
 Phone: +91 8985809434`;
 
     let url = "https://wa.me/91" + phone + "?text=" + encodeURIComponent(message);
-    window.open(url);
+    window.open(url, '_blank');
 }
