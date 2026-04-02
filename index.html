@@ -1,73 +1,33 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Student Fee Manager</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
+let users = JSON.parse(localStorage.getItem("users")) || {};
 
-<script>
-if(localStorage.getItem("loggedIn") !== "true") {
-    window.location.href = "login.html";
+function register() {
+    let user = document.getElementById("username").value;
+    let pass = document.getElementById("password").value;
+
+    if(user === "" || pass === "") {
+        alert("Enter username and password");
+        return;
+    }
+
+    if(users[user]) {
+        alert("User already exists");
+        return;
+    }
+
+    users[user] = pass;
+    localStorage.setItem("users", JSON.stringify(users));
+    alert("Account created. Now login.");
 }
-</script>
 
-<h1>Nandi Pipes Badminton Academy</h1>
-<button onclick="logout()">Logout</button>
+function login() {
+    let user = document.getElementById("username").value;
+    let pass = document.getElementById("password").value;
 
-<div class="dashboard">
-    <h3>Total Students: <span id="totalStudents">0</span></h3>
-    <h3>Paid Students: <span id="paidStudents">0</span></h3>
-    <h3>Pending Students: <span id="pendingStudents">0</span></h3>
-    <h3>Total Amount: ₹<span id="totalAmount">0</span></h3>
-    <h3>Paid Amount: ₹<span id="paidAmount">0</span></h3>
-    <h3>Pending Amount: ₹<span id="pendingAmount">0</span></h3>
-</div>
-
-<input type="text" id="search" placeholder="Search Student" onkeyup="searchStudent()">
-
-<div class="form">
-    <input type="text" id="name" placeholder="Student Name">
-    <input type="number" id="amount" placeholder="Fee Amount">
-    <input type="month" id="dueDate">
-    <input type="text" id="phone" placeholder="Phone Number">
-    <button onclick="addStudent()">Add / Update Student</button>
-</div>
-
-<button onclick="sendReminderToAll()">Send Reminder To All Pending</button>
-<button onclick="backupData()">Backup Data</button>
-<input type="file" onchange="restoreData(event)">
-
-<h2>Student List</h2>
-<table>
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Amount</th>
-            <th>Due Date</th>
-            <th>Status</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody id="studentTable"></tbody>
-</table>
-
-<!-- 12 Month History Modal -->
-<div id="historyModal" style="display:none; background:white; padding:20px; border:1px solid black;">
-    <h3 id="historyTitle"></h3>
-    <table>
-        <thead>
-            <tr>
-                <th>Month</th>
-                <th>Status</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody id="historyTable"></tbody>
-    </table>
-    <button onclick="closeHistory()">Close</button>
-</div>
-
-<script src="script.js"></script>
-</body>
-</html>
+    if(users[user] && users[user] === pass) {
+        localStorage.setItem("loggedIn", "true");
+        localStorage.setItem("currentUser", user);
+        window.location.href = "index.html";
+    } else {
+        alert("Invalid login");
+    }
+}
