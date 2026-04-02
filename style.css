@@ -1,39 +1,31 @@
 body {
     font-family: Arial;
-    margin: 20px;
+    padding: 20px;
 }
 
-.dashboard {
-    display: flex;
-    gap: 20px;
+h1 {
+    color: darkblue;
 }
 
-.card {
-    background: lightblue;
-    padding: 15px;
-    border-radius: 10px;
-    width: 180px;
-    text-align: center;
-    font-weight: bold;
-}
-
-input, select, button {
+.form input {
     padding: 8px;
     margin: 5px;
 }
 
+button {
+    padding: 8px 12px;
+    background-color: green;
+    color: white;
+    border: none;
+}
+
 table {
     width: 100%;
-    border-collapse: collapse;
     margin-top: 20px;
+    border-collapse: collapse;
 }
 
 table, th, td {
     border: 1px solid gray;
     padding: 10px;
-    text-align: center;
-}
-
-button {
-    cursor: pointer;
 }
