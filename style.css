@@ -22,10 +22,6 @@ button {
     margin: 5px;
 }
 
-button:hover {
-    background-color: darkgreen;
-}
-
 table {
     width: 100%;
     margin-top: 20px;
