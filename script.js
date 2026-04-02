@@ -1,4 +1,4 @@
-let students = [];
+    let students = [];
 let editIndex = -1;
 
 window.onload = function() {
@@ -48,10 +48,12 @@ function displayStudents(list = students) {
     list.forEach((s, index) => {
         table.innerHTML += `
             <tr>
-                <td>${s.name}</td>
+                <td onclick="openHistory(${index})" style="cursor:pointer; color:blue;">
+                    ${s.name}
+                </td>
                 <td>${s.amount}</td>
                 <td>${s.dueDate}</td>
-                <td>${s.status}</td>
+                <td style="color:${s.status==='Paid'?'green':'red'}">${s.status}</td>
                 <td>
                     <button onclick="markPaid(${index})">Paid</button>
                     <button onclick="editStudent(${index})">Edit</button>
@@ -101,9 +103,11 @@ function editStudent(index) {
 }
 
 function deleteStudent(index) {
-    students.splice(index, 1);
-    saveData();
-    displayStudents();
+    if(confirm("Delete this student?")) {
+        students.splice(index, 1);
+        saveData();
+        displayStudents();
+    }
 }
 
 function searchStudent() {
@@ -112,7 +116,6 @@ function searchStudent() {
     displayStudents(filtered);
 }
 
-/* Updated Reminder Message */
 function sendReminder(phone, name, amount, dueDate) {
     phone = phone.replace(/\D/g, "");
 
@@ -129,24 +132,15 @@ Coach: Nagarjuna`;
     window.open("https://wa.me/91" + phone + "?text=" + encodeURIComponent(message));
 }
 
-/* Payment Receipt Message */
 function sendReceipt(phone, name, amount) {
     phone = phone.replace(/\D/g, "");
     let today = new Date().toISOString().split('T')[0];
 
-    let message = `*Nandi Pipes Badminton Academy*
-
-Payment Receipt
-----------------------
+    let message = `Payment Receipt
 Name: ${name}
-Amount: Rs. ${amount}
+Amount: Rs.${amount}
 Date: ${today}
-Status: PAID
-
-Thank you for your payment.
-
-Coach: Nagarjuna
-Phone: +91 8985809434`;
+Status: PAID`;
 
     window.open("https://wa.me/91" + phone + "?text=" + encodeURIComponent(message));
 }
@@ -177,4 +171,48 @@ function restoreData(event) {
         displayStudents();
     };
     reader.readAsText(file);
+}
+
+/* 12 Month History */
+function openHistory(index) {
+    let student = students[index];
+
+    if(!student.history) {
+        student.history = {
+            Jan:"Pending", Feb:"Pending", Mar:"Pending",
+            Apr:"Pending", May:"Pending", Jun:"Pending",
+            Jul:"Pending", Aug:"Pending", Sep:"Pending",
+            Oct:"Pending", Nov:"Pending", Dec:"Pending"
+        };
+    }
+
+    document.getElementById("historyModal").style.display = "block";
+    document.getElementById("historyTitle").innerText = student.name + " - 12 Month Fee History";
+
+    let table = document.getElementById("historyTable");
+    table.innerHTML = "";
+
+    for(let month in student.history) {
+        table.innerHTML += `
+            <tr>
+                <td>${month}</td>
+                <td>${student.history[month]}</td>
+                <td>
+                    <button onclick="markMonthPaid(${index}, '${month}')">Paid</button>
+                </td>
+            </tr>
+        `;
+    }
+
+    saveData();
+}
+
+function markMonthPaid(index, month) {
+    students[index].history[month] = "Paid";
+    saveData();
+    openHistory(index);
+}
+
+function closeHistory() {
+    document.getElementById("historyModal").style.display = "none";
 }
