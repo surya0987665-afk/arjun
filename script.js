@@ -112,23 +112,42 @@ function searchStudent() {
     displayStudents(filtered);
 }
 
+/* Updated Reminder Message */
 function sendReminder(phone, name, amount, dueDate) {
     phone = phone.replace(/\D/g, "");
+
     let message = `Hello ${name},
-Your fee of Rs.${amount} is due on ${dueDate}.
-Please pay the fee.`;
+
+This is a gentle reminder from *Nandi Pipes Badminton Academy*.
+Your fee of Rs. ${amount} is due on ${dueDate}.
+
+Please complete the payment at the earliest.
+
+Thank you.
+Coach: Nagarjuna`;
+
     window.open("https://wa.me/91" + phone + "?text=" + encodeURIComponent(message));
 }
 
+/* Payment Receipt Message */
 function sendReceipt(phone, name, amount) {
     phone = phone.replace(/\D/g, "");
     let today = new Date().toISOString().split('T')[0];
 
-    let message = `Payment Receipt
+    let message = `*Nandi Pipes Badminton Academy*
+
+Payment Receipt
+----------------------
 Name: ${name}
-Amount: Rs.${amount}
+Amount: Rs. ${amount}
 Date: ${today}
-Status: PAID`;
+Status: PAID
+
+Thank you for your payment.
+
+Coach: Nagarjuna
+Phone: +91 8985809434`;
+
     window.open("https://wa.me/91" + phone + "?text=" + encodeURIComponent(message));
 }
 
