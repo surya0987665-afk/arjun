@@ -44,6 +44,7 @@ function addStudent() {
     saveData();
     displayStudents();
 
+    // Clear form
     document.getElementById("name").value = "";
     document.getElementById("amount").value = "";
     document.getElementById("dueDate").value = "";
@@ -170,7 +171,38 @@ Phone: +91 8985809434`;
     window.open("https://wa.me/91" + phone + "?text=" + encodeURIComponent(message));
 }
 
-/* 12 MONTH HISTORY WITH PAID / UNPAID */
+/* SEND REMINDER TO ALL */
+function sendReminderToAll() {
+    students.forEach(s => {
+        if(s.status !== "Paid") {
+            sendReminder(s.phone, s.name, s.amount, s.dueDate);
+        }
+    });
+}
+
+/* BACKUP */
+function backupData() {
+    let data = JSON.stringify(students);
+    let blob = new Blob([data], {type: "application/json"});
+    let a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "students_backup.json";
+    a.click();
+}
+
+/* RESTORE */
+function restoreData(event) {
+    let file = event.target.files[0];
+    let reader = new FileReader();
+    reader.onload = function() {
+        students = JSON.parse(reader.result);
+        saveData();
+        displayStudents();
+    };
+    reader.readAsText(file);
+}
+
+/* 12 MONTH HISTORY */
 function openHistory(index) {
     let student = students[index];
 
@@ -190,16 +222,12 @@ function openHistory(index) {
     table.innerHTML = "";
 
     for(let month in student.history) {
-        let status = student.history[month];
-        let color = status === "Paid" ? "green" : "red";
-
         table.innerHTML += `
             <tr>
                 <td>${month}</td>
-                <td style="color:${color}">${status}</td>
+                <td>${student.history[month]}</td>
                 <td>
-                    <button onclick="setMonthStatus(${index}, '${month}', 'Paid')">Paid</button>
-                    <button onclick="setMonthStatus(${index}, '${month}', 'Pending')">Unpaid</button>
+                    <button onclick="markMonthPaid(${index}, '${month}')">Paid</button>
                 </td>
             </tr>
         `;
@@ -208,12 +236,12 @@ function openHistory(index) {
     saveData();
 }
 
-function setMonthStatus(index, month, status) {
-    students[index].history[month] = status;
+function markMonthPaid(index, month) {
+    students[index].history[month] = "Paid";
     saveData();
     openHistory(index);
 }
 
 function closeHistory() {
     document.getElementById("historyModal").style.display = "none";
-    }
+}
