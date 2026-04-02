@@ -52,6 +52,22 @@ if(localStorage.getItem("loggedIn") !== "true") {
     <tbody id="studentTable"></tbody>
 </table>
 
+<!-- 12 Month History Modal -->
+<div id="historyModal" style="display:none; background:white; padding:20px; border:1px solid black;">
+    <h3 id="historyTitle"></h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Month</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="historyTable"></tbody>
+    </table>
+    <button onclick="closeHistory()">Close</button>
+</div>
+
 <script src="script.js"></script>
 </body>
 </html>
