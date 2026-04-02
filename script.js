@@ -1,4 +1,13 @@
-let students = JSON.parse(localStorage.getItem("students")) || [];
+let students = [];
+
+// Load saved data when page opens
+window.onload = function() {
+    let savedStudents = localStorage.getItem("students");
+    if (savedStudents) {
+        students = JSON.parse(savedStudents);
+    }
+    displayStudents();
+};
 
 function saveData() {
     localStorage.setItem("students", JSON.stringify(students));
@@ -103,6 +112,3 @@ Phone: +91 8985809434`;
     let url = "https://wa.me/91" + phone + "?text=" + encodeURIComponent(message);
     window.open(url, '_blank');
 }
-
-// Load data when page opens
-displayStudents();
