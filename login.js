@@ -1,33 +1,21 @@
-let users = JSON.parse(localStorage.getItem("users")) || {};
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-function register() {
-    let user = document.getElementById("username").value;
-    let pass = document.getElementById("password").value;
+<h1>Nandi Pipes Badminton Academy</h1>
 
-    if(user === "" || pass === "") {
-        alert("Enter username and password");
-        return;
-    }
+<div class="form">
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <br><br>
+    <button onclick="login()">Login</button>
+    <button onclick="register()">Create Account</button>
+</div>
 
-    if(users[user]) {
-        alert("User already exists");
-        return;
-    }
-
-    users[user] = pass;
-    localStorage.setItem("users", JSON.stringify(users));
-    alert("Account created. Now login.");
-}
-
-function login() {
-    let user = document.getElementById("username").value;
-    let pass = document.getElementById("password").value;
-
-    if(users[user] && users[user] === pass) {
-        localStorage.setItem("loggedIn", "true");
-        localStorage.setItem("currentUser", user);
-        window.location.href = "index.html";
-    } else {
-        alert("Invalid login");
-    }
-}
+<script src="login.js"></script>
+</body>
+</html>
