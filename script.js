@@ -1,5 +1,8 @@
+let students = JSON.parse(localStorage.getItem("students")) || [];
 
-let students = [];
+function saveData() {
+    localStorage.setItem("students", JSON.stringify(students));
+}
 
 function logout() {
     localStorage.removeItem("loggedIn");
@@ -21,6 +24,7 @@ function addStudent() {
     };
 
     students.push(student);
+    saveData();
     displayStudents();
 }
 
@@ -48,12 +52,14 @@ function displayStudents() {
 
 function markPaid(index) {
     students[index].status = "Paid";
+    saveData();
     displayStudents();
     sendReceipt(students[index].phone, students[index].name, students[index].amount);
 }
 
 function deleteStudent(index) {
     students.splice(index, 1);
+    saveData();
     displayStudents();
 }
 
@@ -97,3 +103,6 @@ Phone: +91 8985809434`;
     let url = "https://wa.me/91" + phone + "?text=" + encodeURIComponent(message);
     window.open(url, '_blank');
 }
+
+// Load data when page opens
+displayStudents();
