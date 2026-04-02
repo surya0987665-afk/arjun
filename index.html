@@ -6,30 +6,37 @@
 </head>
 <body>
 
-    <h1>Nandi Pipes Badminton Academy</h1>
+<script>
+if(localStorage.getItem("loggedIn") !== "true") {
+    window.location.href = "login.html";
+}
+</script>
 
-    <div class="form">
-        <input type="text" id="name" placeholder="Student Name">
-        <input type="number" id="amount" placeholder="Fee Amount">
-        <input type="month" id="dueDate">
-        <input type="text" id="phone" placeholder="Phone Number">
-        <button onclick="addStudent()">Add Student</button>
-    </div>
+<h1>Nandi Pipes Badminton Academy</h1>
+<button onclick="logout()">Logout</button>
 
-    <h2>Student List</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Amount</th>
-                <th>Due Date</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody id="studentTable"></tbody>
-    </table>
+<div class="form">
+    <input type="text" id="name" placeholder="Student Name">
+    <input type="number" id="amount" placeholder="Fee Amount">
+    <input type="month" id="dueDate">
+    <input type="text" id="phone" placeholder="Phone Number">
+    <button onclick="addStudent()">Add Student</button>
+</div>
 
-    <script src="script.js"></script>
+<h2>Student List</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Amount</th>
+            <th>Due Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody id="studentTable"></tbody>
+</table>
+
+<script src="script.js"></script>
 </body>
 </html>
