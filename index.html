@@ -6,6 +6,7 @@
 </head>
 <body>
 
+<!-- Login Protection -->
 <script>
 if(localStorage.getItem("loggedIn") !== "true") {
     window.location.href = "login.html";
@@ -37,6 +38,8 @@ if(localStorage.getItem("loggedIn") !== "true") {
     <tbody id="studentTable"></tbody>
 </table>
 
+<!-- IMPORTANT: script.js must be here -->
 <script src="script.js"></script>
+
 </body>
 </html>
