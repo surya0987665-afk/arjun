@@ -1,64 +1,54 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Fee Manager</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
+let students = [];
 
-<h1>Nandi Pipes Badminton Academy - Fee Manager</h1>
+function addStudent() {
+    let name = document.getElementById("name").value;
+    let amount = document.getElementById("amount").value;
+    let dueDate = document.getElementById("dueDate").value;
 
-<div class="dashboard">
-    <div class="card">Total Students: <span id="totalStudents">0</span></div>
-    <div class="card">Paid Students: <span id="paidStudents">0</span></div>
-    <div class="card">Unpaid Students: <span id="unpaidStudents">0</span></div>
-    <div class="card">Monthly Income: ₹ <span id="monthlyIncome">0</span></div>
-</div>
+    let student = {
+        name: name,
+        amount: amount,
+        dueDate: dueDate,
+        status: "Not Paid"
+    };
 
-<hr>
+    students.push(student);
+    displayStudents();
+}
 
-<h2>Add Student</h2>
-<input type="text" id="name" placeholder="Student Name">
-<input type="text" id="phone" placeholder="Phone Number">
-<input type="number" id="fee" placeholder="Monthly Fee">
-<input type="date" id="dueDate">
-<button onclick="addStudent()">Add Student</button>
+function displayStudents() {
+    let table = document.getElementById("studentTable");
+    table.innerHTML = "";
 
-<hr>
+    students.forEach((s, index) => {
+        table.innerHTML += `
+            <tr>
+                <td>${s.name}</td>
+                <td>${s.amount}</td>
+                <td>${s.dueDate}</td>
+                <td>${s.status}</td>
+                <td>
+                    <button onclick="markPaid(${index})">Paid</button>
+                    <button onclick="sendWhatsApp('${s.name}', '${s.amount}')">Reminder</button>
+                    <button onclick="deleteStudent(${index})">Delete</button>
+                </td>
+            </tr>
+        `;
+    });
+}
 
-<h2>Record Payment</h2>
-<select id="studentSelect"></select>
-<input type="number" id="amount" placeholder="Amount">
-<select id="mode">
-    <option>Cash</option>
-    <option>Online</option>
-    <option>UPI</option>
-</select>
-<input type="date" id="paymentDate">
-<button onclick="recordPayment()">Record Payment</button>
+function markPaid(index) {
+    students[index].status = "Paid";
+    displayStudents();
+}
 
-<hr>
+function deleteStudent(index) {
+    students.splice(index, 1);
+    displayStudents();
+}
 
-<h2>Search Student</h2>
-<input type="text" id="search" onkeyup="searchStudent()" placeholder="Search name">
-
-<hr>
-
-<h2>Students List</h2>
-<table>
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Phone</th>
-            <th>Fee</th>
-            <th>Due Date</th>
-            <th>Status</th>
-            <th>Action</th>
-        </tr>
-    </thead>
-    <tbody id="studentTable"></tbody>
-</table>
-
-<script src="script.js"></script>
-</body>
-</html>
+function sendWhatsApp(name, amount) {
+    let message = `Hello ${name}, your fee of Rs.${amount} is pending. Please pay.`;
+    let url = "https://wa.me/?text=" + encodeURIComponent(message);
+    window.open(url);
+}
