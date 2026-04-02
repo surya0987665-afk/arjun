@@ -1,6 +1,7 @@
-    let students = [];
+let students = [];
 let editIndex = -1;
 
+/* LOAD DATA */
 window.onload = function() {
     let user = localStorage.getItem("currentUser");
     let savedStudents = localStorage.getItem("students_" + user);
@@ -10,16 +11,19 @@ window.onload = function() {
     displayStudents();
 };
 
+/* SAVE DATA */
 function saveData() {
     let user = localStorage.getItem("currentUser");
     localStorage.setItem("students_" + user, JSON.stringify(students));
 }
 
+/* LOGOUT */
 function logout() {
     localStorage.removeItem("loggedIn");
     window.location.href = "login.html";
 }
 
+/* ADD / UPDATE STUDENT */
 function addStudent() {
     let name = document.getElementById("name").value;
     let amount = document.getElementById("amount").value;
@@ -39,27 +43,36 @@ function addStudent() {
 
     saveData();
     displayStudents();
+
+    // Clear form
+    document.getElementById("name").value = "";
+    document.getElementById("amount").value = "";
+    document.getElementById("dueDate").value = "";
+    document.getElementById("phone").value = "";
 }
 
+/* DISPLAY STUDENTS */
 function displayStudents(list = students) {
     let table = document.getElementById("studentTable");
     table.innerHTML = "";
 
-    list.forEach((s, index) => {
+    list.forEach((s) => {
+        let realIndex = students.indexOf(s);
+
         table.innerHTML += `
             <tr>
-                <td onclick="openHistory(${index})" style="cursor:pointer; color:blue;">
+                <td onclick="openHistory(${realIndex})" style="cursor:pointer; color:blue;">
                     ${s.name}
                 </td>
                 <td>${s.amount}</td>
                 <td>${s.dueDate}</td>
                 <td style="color:${s.status==='Paid'?'green':'red'}">${s.status}</td>
                 <td>
-                    <button onclick="markPaid(${index})">Paid</button>
-                    <button onclick="editStudent(${index})">Edit</button>
+                    <button onclick="markPaid(${realIndex})">Paid</button>
+                    <button onclick="editStudent(${realIndex})">Edit</button>
                     <button onclick="sendReminder('${s.phone}','${s.name}', '${s.amount}', '${s.dueDate}')">Reminder</button>
                     <button onclick="sendReceipt('${s.phone}','${s.name}', '${s.amount}')">Receipt</button>
-                    <button onclick="deleteStudent(${index})">Delete</button>
+                    <button onclick="deleteStudent(${realIndex})">Delete</button>
                 </td>
             </tr>
         `;
@@ -68,6 +81,7 @@ function displayStudents(list = students) {
     updateDashboard();
 }
 
+/* DASHBOARD */
 function updateDashboard() {
     let total = students.length;
     let paid = students.filter(s => s.status === "Paid").length;
@@ -86,6 +100,7 @@ function updateDashboard() {
     document.getElementById("pendingAmount").innerText = pendingAmount;
 }
 
+/* ACTIONS */
 function markPaid(index) {
     students[index].status = "Paid";
     saveData();
@@ -110,12 +125,14 @@ function deleteStudent(index) {
     }
 }
 
+/* SEARCH */
 function searchStudent() {
     let value = document.getElementById("search").value.toLowerCase();
     let filtered = students.filter(s => s.name.toLowerCase().includes(value));
     displayStudents(filtered);
 }
 
+/* WHATSAPP REMINDER */
 function sendReminder(phone, name, amount, dueDate) {
     phone = phone.replace(/\D/g, "");
 
@@ -132,19 +149,29 @@ Coach: Nagarjuna`;
     window.open("https://wa.me/91" + phone + "?text=" + encodeURIComponent(message));
 }
 
+/* WHATSAPP RECEIPT */
 function sendReceipt(phone, name, amount) {
     phone = phone.replace(/\D/g, "");
     let today = new Date().toISOString().split('T')[0];
 
-    let message = `Payment Receipt
+    let message = `*Nandi Pipes Badminton Academy*
+
+Payment Receipt
+----------------------
 Name: ${name}
 Amount: Rs.${amount}
 Date: ${today}
-Status: PAID`;
+Status: PAID
+
+Thank you for your payment.
+
+Coach: Nagarjuna
+Phone: +91 8985809434`;
 
     window.open("https://wa.me/91" + phone + "?text=" + encodeURIComponent(message));
 }
 
+/* SEND REMINDER TO ALL */
 function sendReminderToAll() {
     students.forEach(s => {
         if(s.status !== "Paid") {
@@ -153,6 +180,7 @@ function sendReminderToAll() {
     });
 }
 
+/* BACKUP */
 function backupData() {
     let data = JSON.stringify(students);
     let blob = new Blob([data], {type: "application/json"});
@@ -162,6 +190,7 @@ function backupData() {
     a.click();
 }
 
+/* RESTORE */
 function restoreData(event) {
     let file = event.target.files[0];
     let reader = new FileReader();
@@ -173,7 +202,7 @@ function restoreData(event) {
     reader.readAsText(file);
 }
 
-/* 12 Month History */
+/* 12 MONTH HISTORY */
 function openHistory(index) {
     let student = students[index];
 
@@ -215,4 +244,4 @@ function markMonthPaid(index, month) {
 
 function closeHistory() {
     document.getElementById("historyModal").style.display = "none";
-}
+        }
