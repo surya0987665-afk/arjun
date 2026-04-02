@@ -1,8 +1,9 @@
 let students = [];
+let editIndex = -1;
 
-// Load saved data when page opens
 window.onload = function() {
-    let savedStudents = localStorage.getItem("students");
+    let user = localStorage.getItem("currentUser");
+    let savedStudents = localStorage.getItem("students_" + user);
     if (savedStudents) {
         students = JSON.parse(savedStudents);
     }
@@ -10,7 +11,8 @@ window.onload = function() {
 };
 
 function saveData() {
-    localStorage.setItem("students", JSON.stringify(students));
+    let user = localStorage.getItem("currentUser");
+    localStorage.setItem("students_" + user, JSON.stringify(students));
 }
 
 function logout() {
@@ -25,23 +27,25 @@ function addStudent() {
     let phone = document.getElementById("phone").value;
 
     let student = {
-        name: name,
-        amount: amount,
-        dueDate: dueDate,
-        phone: phone,
-        status: "Not Paid"
+        name, amount, dueDate, phone, status: "Not Paid"
     };
 
-    students.push(student);
+    if(editIndex === -1) {
+        students.push(student);
+    } else {
+        students[editIndex] = student;
+        editIndex = -1;
+    }
+
     saveData();
     displayStudents();
 }
 
-function displayStudents() {
+function displayStudents(list = students) {
     let table = document.getElementById("studentTable");
     table.innerHTML = "";
 
-    students.forEach((s, index) => {
+    list.forEach((s, index) => {
         table.innerHTML += `
             <tr>
                 <td>${s.name}</td>
@@ -50,6 +54,7 @@ function displayStudents() {
                 <td>${s.status}</td>
                 <td>
                     <button onclick="markPaid(${index})">Paid</button>
+                    <button onclick="editStudent(${index})">Edit</button>
                     <button onclick="sendReminder('${s.phone}','${s.name}', '${s.amount}', '${s.dueDate}')">Reminder</button>
                     <button onclick="sendReceipt('${s.phone}','${s.name}', '${s.amount}')">Receipt</button>
                     <button onclick="deleteStudent(${index})">Delete</button>
@@ -57,6 +62,26 @@ function displayStudents() {
             </tr>
         `;
     });
+
+    updateDashboard();
+}
+
+function updateDashboard() {
+    let total = students.length;
+    let paid = students.filter(s => s.status === "Paid").length;
+    let pending = total - paid;
+
+    let totalAmount = students.reduce((sum, s) => sum + Number(s.amount), 0);
+    let paidAmount = students.filter(s => s.status === "Paid")
+                    .reduce((sum, s) => sum + Number(s.amount), 0);
+    let pendingAmount = totalAmount - paidAmount;
+
+    document.getElementById("totalStudents").innerText = total;
+    document.getElementById("paidStudents").innerText = paid;
+    document.getElementById("pendingStudents").innerText = pending;
+    document.getElementById("totalAmount").innerText = totalAmount;
+    document.getElementById("paidAmount").innerText = paidAmount;
+    document.getElementById("pendingAmount").innerText = pendingAmount;
 }
 
 function markPaid(index) {
@@ -66,49 +91,71 @@ function markPaid(index) {
     sendReceipt(students[index].phone, students[index].name, students[index].amount);
 }
 
+function editStudent(index) {
+    let s = students[index];
+    document.getElementById("name").value = s.name;
+    document.getElementById("amount").value = s.amount;
+    document.getElementById("dueDate").value = s.dueDate;
+    document.getElementById("phone").value = s.phone;
+    editIndex = index;
+}
+
 function deleteStudent(index) {
     students.splice(index, 1);
     saveData();
     displayStudents();
 }
 
+function searchStudent() {
+    let value = document.getElementById("search").value.toLowerCase();
+    let filtered = students.filter(s => s.name.toLowerCase().includes(value));
+    displayStudents(filtered);
+}
+
 function sendReminder(phone, name, amount, dueDate) {
     phone = phone.replace(/\D/g, "");
-
     let message = `Hello ${name},
-
-This is a gentle reminder from *Nandi Pipes Badminton Academy*.
-Your fee of Rs. ${amount} is due on ${dueDate}.
-
-Please complete the payment at the earliest.
-
-Thank you.
-Coach: Nagarjuna`;
-
-    let url = "https://wa.me/91" + phone + "?text=" + encodeURIComponent(message);
-    window.open(url, '_blank');
+Your fee of Rs.${amount} is due on ${dueDate}.
+Please pay the fee.`;
+    window.open("https://wa.me/91" + phone + "?text=" + encodeURIComponent(message));
 }
 
 function sendReceipt(phone, name, amount) {
     phone = phone.replace(/\D/g, "");
-
     let today = new Date().toISOString().split('T')[0];
 
-    let message = `*Nandi Pipes Badminton Academy*
-
-Payment Receipt
-----------------------
+    let message = `Payment Receipt
 Name: ${name}
-Amount: Rs. ${amount}
-Mode: Online
+Amount: Rs.${amount}
 Date: ${today}
-Status: PAID
+Status: PAID`;
+    window.open("https://wa.me/91" + phone + "?text=" + encodeURIComponent(message));
+}
 
-Thank you for your payment.
+function sendReminderToAll() {
+    students.forEach(s => {
+        if(s.status !== "Paid") {
+            sendReminder(s.phone, s.name, s.amount, s.dueDate);
+        }
+    });
+}
 
-Coach: Nagarjuna
-Phone: +91 8985809434`;
+function backupData() {
+    let data = JSON.stringify(students);
+    let blob = new Blob([data], {type: "application/json"});
+    let a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "students_backup.json";
+    a.click();
+}
 
-    let url = "https://wa.me/91" + phone + "?text=" + encodeURIComponent(message);
-    window.open(url, '_blank');
+function restoreData(event) {
+    let file = event.target.files[0];
+    let reader = new FileReader();
+    reader.onload = function() {
+        students = JSON.parse(reader.result);
+        saveData();
+        displayStudents();
+    };
+    reader.readAsText(file);
 }
